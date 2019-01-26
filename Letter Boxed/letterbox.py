@@ -4,34 +4,41 @@ import math
 import numpy as np
 from collections import deque
 
-"""Simple solution to a generalized version of the word game "Letter Boxed" (as featured in the "Games" section of the New York Times Crossword page)"""
 
-FACES = [list(set(face)) for face in sys.argv[1:-1]]
+"""Simple solution to a generalized version of the word game "Letter Boxed" 
+	(as featured in the "Games" section of the New York Times Crossword page)"""
+	
+
+EDGES = [list(set(edge)) for edge in sys.argv[1:-1]]
 
 counter = 2
-ENCODINGS = [] #to accommodate duplicate letters on different faces and facilitate indexing later on, each letter on the letterbox is assigned a unique prime number encoding.
+ENCODINGS = [] #to accommodate duplicate letters on different edges and facilitate indexing later on, each letter on the letterbox is 
+			   #assigned a unique prime number encoding.
 CODES = []
-for face in FACES:
-	face_encodings = {}
-	for letter in face:
+for edge in EDGES:
+	edge_encodings = {}
+	for letter in edge:
 		while(any(counter % i == 0 for i in range(2, int(counter**0.5) + 1))):
 			counter += 1
-		face_encodings[letter] = counter
+		edge_encodings[letter] = counter
 		CODES.append(counter)
 		counter += 1
-	ENCODINGS.append(face_encodings)
+	ENCODINGS.append(edge_encodings)
 
 TARGET = int(sys.argv[-1]) #Maximum solution length
+
 
 def valid(word):
 	"""Determine if a word can be formed with the specified letterbox."""
 
 	for i in range(len(word)):
 		if(i > 0):
-			if(not any(word[i] in face and word[i - 1] in face_2 and face is not face_2 for face in FACES for face_2 in FACES)):
+			if(not any(word[i] in edge and 
+			   word[i - 1] in edge_2 and edge is not edge_2 for edge in EDGES for edge_2 in EDGES)):
 				return False
 		if(i < len(word) - 1):
-			if(not any(word[i] in face and word[i + 1] in face_2 and face is not face_2 for face in FACES for face_2 in FACES)):
+			if(not any(word[i] in edge 
+			   and word[i + 1] in edge_2 and edge is not edge_2 for edge in EDGES for edge_2 in EDGES)):
 				return False
 	return True
 
@@ -41,15 +48,15 @@ def generate_key(word):
 
 	key = 1
 	for i in range(len(word)):
-		for face, encodings in zip(FACES, ENCODINGS):
-			if(word[i] in face and (i == 0 or any(word[i - 1] in face_2 and face_2 is not face for face_2 in FACES)) 
-			   and (i == len(word) - 1 or any(word[i + 1] in face_2 and face_2 is not face for face_2 in FACES))):
+		for edge, encodings in zip(EDGES, ENCODINGS):
+			if(word[i] in edge and (i == 0 or any(word[i - 1] in edge_2 and edge_2 is not edge for edge_2 in EDGES)) 
+			   and (i == len(word) - 1 or any(word[i + 1] in edge_2 and edge_2 is not edge for edge_2 in EDGES))):
 				key *= encodings[word[i]]
 	return reduce_key(key)
 
 
 def reduce_key(key):
-	"""Helper function for generate_key(). Divides out redundant factors from the numerical key."""
+	"""Helper function for generate_key(). Divide out redundant factors from the numerical key."""
 
 	for code in CODES:
 		while((key / code) % code == 0):
@@ -58,7 +65,7 @@ def reduce_key(key):
 
 
 def prod(iterable):
-	"""Analogous to the built-in 'sum' function. Returns the product of integers from an iterator."""
+	"""Analogous to the built-in 'sum' function. Return the product of integers from an iterator."""
 
 	product = 1
 	for item in iterable:
@@ -66,14 +73,22 @@ def prod(iterable):
 	return product
 
 
-def bfs(words, traversal_order, faces, codes, target):
-	"""Given a dictionary of valid letter:word list pairs, a list of letters determining the order in which said dictionary should be traversed, and the letterbox parameters, return all solutions to the problem."""
+def bfs(words, traversal_order, edges, codes, target):
+	"""Return all solutions to the problem.
+
+	Keyword arguments:
+	words -- dictionary of first_letter:word_list pairs
+	traversal_order -- order in which the letters should be traversed
+	edges -- nested list of letterbox edge strings
+	codes -- list of unique prime number codes for each letter on the letterbox
+	target -- maximum solution length
+	"""
 
 	solutions = []
 
 	keys = {word:generate_key(word) for letter in words.keys() for word in words[letter]}
 
-	path_log = {letter:{keys[word]:[word] for word in words[letter]} for face in faces for letter in face}
+	path_log = {letter:{keys[word]:[word] for word in words[letter]} for edge in edges for letter in edge}
 
 	fringe = deque(((key, word_list) for letter in traversal_order for key, word_list in path_log[letter].items()))
 
@@ -104,12 +119,12 @@ def bfs(words, traversal_order, faces, codes, target):
 #Construct a dictionary of word candidates.
 with open('dict.txt', 'r') as f:
 	words = {}
-	for face in FACES:
-		for letter in face:
+	for edge in EDGES:
+		for letter in edge:
 			words.setdefault(letter, [])
 	for word in f.readlines():
 		word = word.strip('\n')
-		if(len(word) >= 4 and all((any(letter in face for face in FACES) for letter in word)) and valid(word)):
+		if(len(word) >= 4 and all((any(letter in edge for edge in EDGES) for letter in word)) and valid(word)):
 			words[word[0]].append(word)
 
 #Sort the words in decreasing order of cumulative letter 'scarcity.'
@@ -126,5 +141,5 @@ for first_letter in words.keys():
 traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
 
 #Return all solutions.
-for solution in bfs(words, traversal_order, FACES, CODES, TARGET):
+for solution in bfs(words, traversal_order, EDGES, CODES, TARGET):
 	print('—'.join(solution))
