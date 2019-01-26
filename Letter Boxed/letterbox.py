@@ -7,7 +7,7 @@ from collections import deque
 
 """Simple solution to a generalized version of the word game "Letter Boxed" 
 	(as featured in the "Games" section of the New York Times Crossword page)"""
-	
+
 
 EDGES = [list(set(edge)) for edge in sys.argv[1:-1]]
 
@@ -136,7 +136,8 @@ for first_letter in words.keys():
 			occurrences[ord(letter) - 97] += 1
 
 for first_letter in words.keys():
-	words[first_letter] = sorted(words[first_letter], key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
+	words[first_letter] = sorted(words[first_letter], 
+								 key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
 
 traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
 
