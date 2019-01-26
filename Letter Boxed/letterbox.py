@@ -102,8 +102,8 @@ if __name__ == '__main__':
 	EDGES = [list(set(edge)) for edge in sys.argv[1:-1]]
 
 	counter = 2
-	ENCODINGS = [] #to accommodate duplicate letters on different edges and facilitate indexing later on, each letter on the letterbox is 
-				   #assigned a unique prime number encoding.
+	ENCODINGS = [] #to accommodate duplicate letters on different edges and facilitate indexing later on, each letter on the letterbox is
+				  #assigned a unique prime number encoding.
 	CODES = []
 	for edge in EDGES:
 		edge_encodings = {}
@@ -138,7 +138,7 @@ if __name__ == '__main__':
 
 	for first_letter in words.keys():
 		words[first_letter] = sorted(words[first_letter], 
-									 key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
+									key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
 
 	traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
 
