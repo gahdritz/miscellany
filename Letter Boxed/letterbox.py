@@ -117,7 +117,6 @@ if __name__ == '__main__':
 
 	TARGET = int(sys.argv[-1]) #Maximum solution length
 
-
 	#Construct a dictionary of word candidates.
 	with open('dict.txt', 'r') as f:
 		words = {}
