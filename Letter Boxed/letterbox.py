@@ -122,7 +122,7 @@ if __name__ == '__main__':
 		words = {}
 		for edge in EDGES:
 			for letter in edge:
-				words.setdefault(letter, [])
+				words[letter]  = []
 		for word in f.readlines():
 			word = word.strip('\n')
 			if(len(word) >= 4 and all((any(letter in edge for edge in EDGES) for letter in word)) and valid(word)):
