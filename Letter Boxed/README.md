@@ -1,8 +1,8 @@
-#Letter Boxed
+# Letter Boxed
 
 A simple solution to a generalized version of the word game "Letter Boxed" (as featured in the "Games" section of the New York Times Crossword page)
 
-##Rules
+## Rules
 
 The game is played on "letterboxes" of the following format:
 
@@ -26,7 +26,7 @@ Given a target length N, the player is asked to form a list of at most N words t
 
 The sequence "exclaim"—"matrimony" solves the provided letterbox.
 
-##Usage
+## Usage
 
 ```
 python letterbox.py FACE_1 ... FACE_N TARGET
@@ -34,12 +34,12 @@ python letterbox.py FACE_1 ... FACE_N TARGET
 
 where the N face variables are strings of arbitrarily many lowercase letters corresponding to faces on an n-sided letterbox (e.g. 'abc') and TARGET is the maximum solution length.
 
-##Example
+## Example
 
 ```
 python letterbox.py abcd ae trs bly por 3
 ```
 
-##Acknowledgements
+## Acknowledgements
 
 - dict.txt is derived from the 3of6game word list from [Alan Beale's 12dicts project] (http://wordlist.aspell.net/12dicts-readme/ "12dicts README")
