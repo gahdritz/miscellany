@@ -1,5 +1,5 @@
 # miscellany
-Assorted Python scripts.
+Assorted Python projects.
 
 # Author
 Gustaf Ahdritz
