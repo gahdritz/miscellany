@@ -33,8 +33,8 @@ def valid(word):
 		if(i < len(word) - 1):
 			if(not any(word[i] in face and word[i + 1] in face_2 and face is not face_2 for face in FACES for face_2 in FACES)):
 				return False
-
 	return True
+
 
 def generate_key(word):
 	"""Generates a numerical dictionary key unique to all anagrams of the supplied string 'word.'"""
@@ -45,8 +45,8 @@ def generate_key(word):
 			if(word[i] in face and (i == 0 or any(word[i - 1] in face_2 and face_2 is not face for face_2 in FACES)) 
 			   and (i == len(word) - 1 or any(word[i + 1] in face_2 and face_2 is not face for face_2 in FACES))):
 				key *= encodings[word[i]]
-
 	return reduce_key(key)
+
 
 def reduce_key(key):
 	"""Helper function for generate_key(). Divides out redundant factors from the numerical key."""
@@ -54,8 +54,8 @@ def reduce_key(key):
 	for code in CODES:
 		while((key / code) % code == 0):
 			key /= code
-
 	return int(key)
+
 
 def prod(iterable):
 	"""Analogous to the built-in 'sum' function. Returns the product of integers from an iterator."""
@@ -63,8 +63,8 @@ def prod(iterable):
 	product = 1
 	for item in iterable:
 		product *= item
-
 	return product
+
 
 def bfs(words, traversal_order, faces, codes, target):
 	"""Given a dictionary of valid letter:word list pairs, a list of letters determining the order in which said dictionary should be traversed, and the letterbox parameters, return all solutions to the problem."""
@@ -100,8 +100,8 @@ def bfs(words, traversal_order, faces, codes, target):
 		for word in words[path[-1][-1]]:
 			new_path = path + [word]
 
-#Construct a dictionary of word candidates.
 
+#Construct a dictionary of word candidates.
 with open('dict.txt', 'r') as f:
 	words = {}
 	for face in FACES:
@@ -113,7 +113,6 @@ with open('dict.txt', 'r') as f:
 			words[word[0]].append(word)
 
 #Sort the words in decreasing order of cumulative letter 'scarcity.'
-
 occurrences = np.zeros(26)
 
 for first_letter in words.keys():
@@ -127,11 +126,5 @@ for first_letter in words.keys():
 traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
 
 #Return all solutions.
-
 for solution in bfs(words, traversal_order, FACES, CODES, TARGET):
 	print('—'.join(solution))
-
-
-
-
-	
