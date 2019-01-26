@@ -42,4 +42,4 @@ python letterbox.py abcd ae trs bly por 3
 
 ## Acknowledgements
 
-- dict.txt is derived from the 3of6game word list from [Alan Beale's 12dicts project] (http://wordlist.aspell.net/12dicts-readme/ "12dicts README")
+- dict.txt is derived from the 3of6game word list from [Alan Beale's 12dicts project](http://wordlist.aspell.net/12dicts-readme/ "12dicts README")
