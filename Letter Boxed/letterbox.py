@@ -9,25 +9,6 @@ from collections import deque
 	(as featured in the "Games" section of the New York Times Crossword page)"""
 
 
-EDGES = [list(set(edge)) for edge in sys.argv[1:-1]]
-
-counter = 2
-ENCODINGS = [] #to accommodate duplicate letters on different edges and facilitate indexing later on, each letter on the letterbox is 
-			   #assigned a unique prime number encoding.
-CODES = []
-for edge in EDGES:
-	edge_encodings = {}
-	for letter in edge:
-		while(any(counter % i == 0 for i in range(2, int(counter**0.5) + 1))):
-			counter += 1
-		edge_encodings[letter] = counter
-		CODES.append(counter)
-		counter += 1
-	ENCODINGS.append(edge_encodings)
-
-TARGET = int(sys.argv[-1]) #Maximum solution length
-
-
 def valid(word):
 	"""Determine if a word can be formed with the specified letterbox."""
 
@@ -116,31 +97,52 @@ def bfs(words, traversal_order, edges, codes, target):
 			new_path = path + [word]
 
 
-#Construct a dictionary of word candidates.
-with open('dict.txt', 'r') as f:
-	words = {}
+if __name__ == '__main__':
+
+	EDGES = [list(set(edge)) for edge in sys.argv[1:-1]]
+
+	counter = 2
+	ENCODINGS = [] #to accommodate duplicate letters on different edges and facilitate indexing later on, each letter on the letterbox is 
+				   #assigned a unique prime number encoding.
+	CODES = []
 	for edge in EDGES:
+		edge_encodings = {}
 		for letter in edge:
-			words.setdefault(letter, [])
-	for word in f.readlines():
-		word = word.strip('\n')
-		if(len(word) >= 4 and all((any(letter in edge for edge in EDGES) for letter in word)) and valid(word)):
-			words[word[0]].append(word)
+			while(any(counter % i == 0 for i in range(2, int(counter**0.5) + 1))):
+				counter += 1
+			edge_encodings[letter] = counter
+			CODES.append(counter)
+			counter += 1
+		ENCODINGS.append(edge_encodings)
 
-#Sort the words in decreasing order of cumulative letter 'scarcity.'
-occurrences = np.zeros(26)
+	TARGET = int(sys.argv[-1]) #Maximum solution length
 
-for first_letter in words.keys():
-	for word in words[first_letter]:
-		for letter in word:
-			occurrences[ord(letter) - 97] += 1
 
-for first_letter in words.keys():
-	words[first_letter] = sorted(words[first_letter], 
-								 key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
+	#Construct a dictionary of word candidates.
+	with open('dict.txt', 'r') as f:
+		words = {}
+		for edge in EDGES:
+			for letter in edge:
+				words.setdefault(letter, [])
+		for word in f.readlines():
+			word = word.strip('\n')
+			if(len(word) >= 4 and all((any(letter in edge for edge in EDGES) for letter in word)) and valid(word)):
+				words[word[0]].append(word)
 
-traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
+	#Sort the words in decreasing order of cumulative letter 'scarcity.'
+	occurrences = np.zeros(26)
 
-#Return all solutions.
-for solution in bfs(words, traversal_order, EDGES, CODES, TARGET):
-	print('—'.join(solution))
+	for first_letter in words.keys():
+		for word in words[first_letter]:
+			for letter in word:
+				occurrences[ord(letter) - 97] += 1
+
+	for first_letter in words.keys():
+		words[first_letter] = sorted(words[first_letter], 
+									 key=lambda word: -1*sum((1 / occurrences[(ord(letter) - 97)] for letter in word)))
+
+	traversal_order = [chr(letter + 97) for letter in np.argsort(occurrences) if occurrences[letter] > 0]
+
+	#Return all solutions.
+	for solution in bfs(words, traversal_order, EDGES, CODES, TARGET):
+		print('—'.join(solution))
